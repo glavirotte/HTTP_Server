@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
 import httpserver.itf.HttpRequest;
@@ -29,8 +30,10 @@ public class HttpServer {
 	private int m_port;
 	private File m_folder;  // default folder for accessing static resources (files)
 	private ServerSocket m_ssoc;
+	private HashMap<String, HttpRicmlet> instances;
 
 	protected HttpServer(int port, String folderName) {
+		instances = new HashMap<String, HttpRicmlet>();
 		m_port = port;
 		if (!folderName.endsWith(File.separator)) 
 			folderName = folderName + File.separator;
@@ -53,9 +56,11 @@ public class HttpServer {
 	public HttpRicmlet getInstance(String clsname)
 			throws InstantiationException, IllegalAccessException, ClassNotFoundException, MalformedURLException, 
 			IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		Class<HttpRicmlet> c = (Class<HttpRicmlet>) Class.forName(clsname);
-		return c.getDeclaredConstructor().newInstance();
-		
+		if (!instances.containsKey(clsname)) {
+			Class<?> c = Class.forName(clsname);
+			instances.put(clsname, (HttpRicmlet) c.getDeclaredConstructor().newInstance());
+		}
+		return instances.get(clsname);
 	}
 
 

@@ -1,12 +1,9 @@
 package httpserver.itf.impl;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.util.HashMap;
 
-import examples.HelloRicmlet;
 import httpserver.itf.HttpRequest;
 import httpserver.itf.HttpResponse;
 import httpserver.itf.HttpRicmlet;
@@ -15,10 +12,21 @@ import httpserver.itf.HttpRicmletResponse;
 import httpserver.itf.HttpSession;
 
 public class HttpRicmletRequestImpl extends HttpRicmletRequest{
+	
+	HashMap<String, String> args = new HashMap<String, String>();
 
 	public HttpRicmletRequestImpl(HttpServer hs, String method, String ressname, BufferedReader br) throws IOException {
 		super(hs, method, ressname, br);
 		// TODO Auto-generated constructor stub
+		if (ressname.contains("?")) {
+			String[] url = ressname.split("\\?");
+			m_ressname = url[0];
+			String[] arguments = url[1].split("&");
+			for (String a : arguments) {
+				String[] vars = a.split("=");
+				args.put(vars[0], vars[1]);
+			}
+		}
 	}
 
 	@Override
@@ -30,7 +38,7 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 	@Override
 	public String getArg(String name) {
 		// TODO Auto-generated method stub
-		return null;
+		return args.get(name);
 	}
 
 	@Override
@@ -50,8 +58,7 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 				for (int i = 3; i < splitr.length; i++) {
 					clsname += "."+splitr[i];
 				}
-				Class<?> c = Class.forName(clsname);
-				HttpRicmlet ressource = (HttpRicmlet) c.getDeclaredConstructor().newInstance();
+				HttpRicmlet ressource = m_hs.getInstance(clsname);
 				resp.setReplyOk();
 				resp.setContentType(HttpRequest.getContentType(m_ressname));
 				ressource.doGet(this, (HttpRicmletResponse)resp);
