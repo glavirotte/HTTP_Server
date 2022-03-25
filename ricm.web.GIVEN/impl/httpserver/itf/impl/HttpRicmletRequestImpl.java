@@ -1,12 +1,7 @@
 package httpserver.itf.impl;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintStream;
-
-import examples.HelloRicmlet;
 import httpserver.itf.HttpRequest;
 import httpserver.itf.HttpResponse;
 import httpserver.itf.HttpRicmlet;
@@ -50,8 +45,7 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 				for (int i = 3; i < splitr.length; i++) {
 					clsname += "."+splitr[i];
 				}
-				Class<?> c = Class.forName(clsname);
-				HttpRicmlet ressource = (HttpRicmlet) c.getDeclaredConstructor().newInstance();
+				HttpRicmlet ressource = m_hs.getInstance(clsname);
 				resp.setReplyOk();
 				resp.setContentType(HttpRequest.getContentType(m_ressname));
 				ressource.doGet(this, (HttpRicmletResponse)resp);
