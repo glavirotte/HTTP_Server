@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
-
 import httpserver.itf.HttpRequest;
 import httpserver.itf.HttpResponse;
 
@@ -25,22 +24,19 @@ public class HttpStaticRequest extends HttpRequest {
 			File ressource = new File(m_hs.getFolder()+m_ressname);
 			
 			if(!ressource.exists()) {
+				resp.setReplyError(404, "File not found");
 				throw new FileNotFoundException("File "+m_ressname+"not found");
 			}else {
 				FileInputStream fis = new FileInputStream(ressource);
-				
 				resp.setReplyOk();
 				resp.setContentLength((int) ressource.length());
 				resp.setContentType("HTML");
+
 				PrintStream ps = resp.beginBody();
 				ps.write(fis.readAllBytes());
 				fis.close();
 			}
-			
-			
-			
 		}
-		
 	}
 
 }
