@@ -19,9 +19,13 @@ public class CountBySessionRicmlet implements httpserver.itf.HttpRicmlet{
 	public void doGet(HttpRicmletRequest req,  HttpRicmletResponse resp) throws IOException {
 		HttpSession s = req.getSession();
 		Integer c = (Integer) s.getValue("counter");
-		if (c == null)
-			s.setValue("counter", new Integer(0));
-		else s.setValue("counter", new Integer(c.intValue()+1));
+		if (c == null) {
+			Integer zero = 0;
+			s.setValue("counter", zero);
+		}else {
+			Integer i = c.intValue() + 1;
+			s.setValue("counter", i);
+		}
 		resp.setReplyOk();
 		resp.setContentType("text/html");
 		PrintStream ps = resp.beginBody();
@@ -29,6 +33,6 @@ public class CountBySessionRicmlet implements httpserver.itf.HttpRicmlet{
 		ps.print("<BODY><H4> Hello for the " + s.getValue("counter") + " times !!!");
 		ps.println("</H4></BODY></HTML>");
 		ps.println();
-}
+	}
 
 }

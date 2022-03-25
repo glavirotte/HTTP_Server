@@ -3,7 +3,6 @@ package httpserver.itf.impl;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Hashtable;
-
 import httpserver.itf.HttpRequest;
 import httpserver.itf.HttpResponse;
 import httpserver.itf.HttpRicmlet;
@@ -13,11 +12,14 @@ import httpserver.itf.HttpSession;
 
 public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 	
-	Hashtable<String, String> arguments = new Hashtable<String, String>();
+	private Hashtable<String, String> arguments = new Hashtable<String, String>();
+	private Hashtable<String, String> cookies = new Hashtable<String, String>();
+	private BufferedReader reader;
 
 	public HttpRicmletRequestImpl(HttpServer hs, String method, String ressname, BufferedReader br) throws IOException {
 		super(hs, method, ressname, br);
-		// TODO Auto-generated constructor stub
+		this.reader = br;
+		parseCookies();
 	}
 
 	@Override
@@ -33,8 +35,7 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 
 	@Override
 	public String getCookie(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return cookies.get(name);
 	}
 
 	@Override
@@ -61,11 +62,22 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 				resp.setContentType(HttpRequest.getContentType(m_ressname));
 				ressource.doGet(this, (HttpRicmletResponse)resp);
 			} catch (ClassNotFoundException e) {
-				resp.setReplyError(404, "HTTP/1.0 404 Class not found");
+				resp.setReplyError(404, " Class not found");
 				e.printStackTrace();
 			}
 		}
 		
 	}
-
+	
+	public void parseCookies() throws IOException {
+			String currentLine;
+			while (!(currentLine = reader.readLine()).isEmpty()) {
+				if (currentLine.startsWith("Cookie: ")) {
+					String cookieLine = currentLine.substring(8);
+					String cookie[] = cookieLine.split("=");
+					cookies.put(cookie[0], cookie[1]);
+					System.out.println("Cookie: " + cookie[0] + " = " + cookie[1]);
+				}
+			}
+	}
 }
