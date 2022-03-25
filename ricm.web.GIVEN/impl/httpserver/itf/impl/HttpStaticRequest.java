@@ -17,7 +17,7 @@ public class HttpStaticRequest extends HttpRequest {
 	}
 	
 	public void process(HttpResponse resp) throws Exception {
-	// TO COMPLETE
+		resp.setReplyOk();
 	}
 
 }

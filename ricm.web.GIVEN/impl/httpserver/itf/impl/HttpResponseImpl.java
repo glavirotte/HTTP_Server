@@ -24,6 +24,10 @@ class HttpResponseImpl implements HttpResponse {
 		m_ps.println("HTTP/1.0 200 OK");
 		m_ps.println("Date: " + new Date());
 		m_ps.println("Server: ricm-http 1.0");
+		m_ps.println("Content-type: text/html");
+		m_ps.println();
+		m_ps.println("<HTML><HEAD><TITLE>Hello World</TITLE></HEAD>");
+		m_ps.println("<BODY><H1>Hello World</H1></BODY></HTML>");
 	}
 
 	public void setReplyError(int codeRet, String msg) throws IOException {
