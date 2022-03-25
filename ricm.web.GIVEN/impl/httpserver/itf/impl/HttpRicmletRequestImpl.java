@@ -61,7 +61,7 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 				resp.setContentType(HttpRequest.getContentType(m_ressname));
 				ressource.doGet(this, (HttpRicmletResponse)resp);
 			} catch (ClassNotFoundException e) {
-				resp.setReplyError(404, "Class not found");
+				resp.setReplyError(404, "HTTP/1.0 404 Class not found");
 				e.printStackTrace();
 			}
 		}
