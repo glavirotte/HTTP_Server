@@ -80,4 +80,8 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 				}
 			}
 	}
+	
+	public void setCookies(String key, String value) {
+		cookies.put(key, value);
+	}
 }
