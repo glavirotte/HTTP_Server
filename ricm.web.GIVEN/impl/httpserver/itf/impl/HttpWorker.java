@@ -40,6 +40,7 @@ public class HttpWorker extends Thread {
 				m_soc.close();
 			} catch (Exception e) {
 				System.err.println("Error closing stream : " + e);
+				
 			} 
 		}
 	}
