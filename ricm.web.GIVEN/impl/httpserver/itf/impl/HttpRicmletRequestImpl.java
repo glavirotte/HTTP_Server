@@ -3,6 +3,7 @@ package httpserver.itf.impl;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Hashtable;
+
 import httpserver.itf.HttpRequest;
 import httpserver.itf.HttpResponse;
 import httpserver.itf.HttpRicmlet;
@@ -22,10 +23,23 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 		parseCookies();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public HttpSession getSession() {
-		// TODO Auto-generated method stub
-		return null;
+		Session session;
+		String sessionId = cookies.get("sessionId");
+		if(sessionId == null) {
+			session = new Session((new Integer(m_hs.sessionNumber++)).toString());
+			this.m_hs.sessions.put(session.getId(), session);
+		}else {
+			session = this.m_hs.sessions.get(sessionId);
+			if(session == null) {
+				session = new Session(getCookie(sessionId));
+				this.m_hs.sessions.put(session.getId(), session);
+				System.out.println("Session:" + session.getId());
+			}
+		}
+		return session;
 	}
 
 	@Override
@@ -66,7 +80,6 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 				e.printStackTrace();
 			}
 		}
-		
 	}
 	
 	public void parseCookies() throws IOException {
@@ -81,7 +94,4 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 			}
 	}
 	
-	public void setCookies(String key, String value) {
-		cookies.put(key, value);
-	}
 }

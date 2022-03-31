@@ -31,10 +31,14 @@ public class HttpServer {
 	private File m_folder;  // default folder for accessing static resources (files)
 	private ServerSocket m_ssoc;
 	private Hashtable<String, HttpRicmlet> instances;
+	public Hashtable<String, Session> sessions;
+	public int sessionNumber = 1;
 
 	protected HttpServer(int port, String folderName) {
 		m_port = port;
 		instances = new Hashtable<String, HttpRicmlet>();
+		sessions = new Hashtable<String, Session>();
+		
 		if (!folderName.endsWith(File.separator)) 
 			folderName = folderName + File.separator;
 		m_folder = new File(folderName);
