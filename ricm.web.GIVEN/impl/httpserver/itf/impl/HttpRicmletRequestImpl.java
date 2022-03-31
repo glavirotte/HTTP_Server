@@ -14,6 +14,7 @@ import httpserver.itf.HttpSession;
 public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 	
 	HashMap<String, String> args = new HashMap<String, String>();
+	HashMap<String, String> cookies = new HashMap<String, String>();
 
 	public HttpRicmletRequestImpl(HttpServer hs, String method, String ressname, BufferedReader br) throws IOException {
 		super(hs, method, ressname, br);
@@ -27,6 +28,7 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 				args.put(vars[0], vars[1]);
 			}
 		}
+		parseCookies(br);
 	}
 
 	@Override
@@ -44,7 +46,7 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 	@Override
 	public String getCookie(String name) {
 		// TODO Auto-generated method stub
-		return null;
+		return cookies.get(name);
 	}
 
 	@Override
@@ -65,6 +67,18 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 			} catch (ClassNotFoundException e) {
 				resp.setReplyError(404, "Class not found");
 				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void parseCookies(BufferedReader br) throws IOException {
+		String currentLine;
+		while (!(currentLine = br.readLine()).isEmpty()) {
+			if (currentLine.startsWith("Cookie: ")) {
+				String cookieLine = currentLine.substring(8);
+				String cookie[] = cookieLine.split("=");
+				cookies.put(cookie[0], cookie[1]);
+				System.out.println("Cookie: " + cookie[0] + " = " + cookie[1]);
 			}
 		}
 	}
