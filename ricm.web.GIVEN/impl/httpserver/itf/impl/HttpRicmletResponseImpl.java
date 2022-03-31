@@ -61,8 +61,8 @@ public class HttpRicmletResponseImpl implements HttpRicmletResponse {
 
 	@Override
 	public void setCookie(String name, String value) {
-		m_ps.println("Set-Cookie: " + name + "=" + value);
-		System.out.println("Set-Cookie: " + name + "=" + value);
+		m_ps.println("Set-Cookie:" + name + "=" + value);
+		System.out.println("Set-Cookie:" + name + "=" + value);
 	}
 
 }

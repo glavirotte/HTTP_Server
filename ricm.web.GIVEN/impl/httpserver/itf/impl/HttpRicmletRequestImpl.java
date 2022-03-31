@@ -13,8 +13,9 @@ import httpserver.itf.HttpSession;
 
 public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 	
-	HashMap<String, String> args = new HashMap<String, String>();
-	HashMap<String, String> cookies = new HashMap<String, String>();
+	protected HashMap<String, String> args = new HashMap<String, String>();
+	protected HashMap<String, String> cookies = new HashMap<String, String>();
+	protected HttpSession session;
 
 	public HttpRicmletRequestImpl(HttpServer hs, String method, String ressname, BufferedReader br) throws IOException {
 		super(hs, method, ressname, br);
@@ -34,7 +35,11 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 	@Override
 	public HttpSession getSession() {
 		// TODO Auto-generated method stub
-		return null;
+		if (session==null) {
+			session = new Session(m_hs.getSessionNumber());
+			m_hs.setSession(session.getId(), session);
+		}
+		return session;
 	}
 
 	@Override
@@ -76,9 +81,41 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 		while (!(currentLine = br.readLine()).isEmpty()) {
 			if (currentLine.startsWith("Cookie: ")) {
 				String cookieLine = currentLine.substring(8);
-				String cookie[] = cookieLine.split("=");
-				cookies.put(cookie[0], cookie[1]);
-				System.out.println("Cookie: " + cookie[0] + " = " + cookie[1]);
+				if (cookieLine.contains(";")) {
+					String[] cookieName = cookieLine.split(";");
+					for (String c : cookieName) {
+						String cookie[] = c.split("=");
+						if (cookie[0].equals("session-id")) {
+							if (m_hs.getSession(cookie[1]) == null) {
+								session = new Session(cookie[1]);
+								m_hs.setSession(cookie[1], session);
+							}
+							else {
+								session = m_hs.getSession(cookie[1]);
+							}
+						}
+						else {
+							cookies.put(cookie[0], cookie[1]);
+							System.out.println("Cookie: " + cookie[0] + " = " + cookie[1]);
+						}
+					}
+				}
+				else {
+					String cookie[] = cookieLine.split("=");
+					if (cookie[0].equals("session-id")) {
+						if (m_hs.getSession(cookie[1]) == null) {
+							session = new Session(cookie[1]);
+							m_hs.setSession(cookie[1], session);
+						}
+						else {
+							session = m_hs.getSession(cookie[1]);
+						}
+					}
+					else {
+						cookies.put(cookie[0], cookie[1]);
+						System.out.println("Cookie: " + cookie[0] + " = " + cookie[1]);
+					}
+				}
 			}
 		}
 	}
