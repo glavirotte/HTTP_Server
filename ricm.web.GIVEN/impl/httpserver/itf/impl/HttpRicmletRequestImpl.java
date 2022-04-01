@@ -3,7 +3,6 @@ package httpserver.itf.impl;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Hashtable;
-
 import httpserver.itf.HttpRequest;
 import httpserver.itf.HttpResponse;
 import httpserver.itf.HttpRicmlet;
@@ -58,12 +57,18 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 		
 		if (m_method.equals("GET")) {
 			try {
+				HttpRicmlet ressource;
 				String clsname = null;
+				String appName = null;
 				
 				if(m_ressname.indexOf("?") < 0) {
-					clsname = (m_ressname.substring(10)).replace("/", ".");
+					String str = m_ressname.substring(10);
+					appName = (str.substring(0, str.indexOf("/")));
+					clsname = (str.substring(appName.length()+1)).replace("/", ".");
 				}else {
-					clsname = (m_ressname.substring(10, m_ressname.indexOf("?"))).replace("/", ".");
+					String str = m_ressname.substring(10);
+					appName = (str.substring(0, str.indexOf("/")));
+					clsname = (str.substring(appName.length()+1, str.indexOf("?"))).replace("/", ".");
 					String args[] = m_ressname.substring(m_ressname.indexOf("?")+1).split("&");
 					for(int i  = 0; i < args.length; i++) {
 						String[] arg = args[i].split("=");
@@ -71,8 +76,8 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 					}
 					
 				}
-
-				HttpRicmlet ressource = m_hs.getInstance(clsname);
+				Application app = new Application();
+				ressource = app.getInstance(clsname, appName);
 				resp.setReplyOk();
 				resp.setContentType(HttpRequest.getContentType(m_ressname));
 				ressource.doGet(this, (HttpRicmletResponse)resp);
