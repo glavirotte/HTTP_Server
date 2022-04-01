@@ -64,15 +64,17 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 				HttpRicmlet ressource;
 				String[] splitr = m_ressname.split("/");
 				String clsname = splitr[2];
-				if (clsname.equals("examples")) {
+				if (splitr.length==4) {
 					for (int i = 3; i < splitr.length; i++) {
 						clsname += "."+splitr[i];
 					}
 					ressource = m_hs.getInstance(clsname);
 				}
 				else {
-					String appname = splitr[2];
-					clsname = splitr[3];
+					String appname = splitr[3];
+					for (int i = 4; i < splitr.length; i++) {
+						clsname += "."+splitr[i];
+					}
 					Application app = new Application();
 					ressource = app.getInstance(clsname, appname);
 				}

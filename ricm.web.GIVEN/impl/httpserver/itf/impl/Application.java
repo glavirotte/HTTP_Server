@@ -22,9 +22,7 @@ public class Application {
 		URL[] classpath = new URL[] {appJar.toURI().toURL()};
 		URLClassLoader appCL = new URLClassLoader(classpath, parent);
 		
-		System.out.println(className);
-		System.out.println(appName);
-		Class appClass = appCL.loadClass("examples."+className);
+		Class appClass = appCL.loadClass(className);
 		
 		Class params[] = new Class[] {};
 		Constructor ctor = appClass.getConstructor(params);
