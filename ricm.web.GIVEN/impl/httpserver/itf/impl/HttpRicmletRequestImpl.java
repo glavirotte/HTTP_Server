@@ -61,12 +61,21 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 		
 		if (m_method.equals("GET")) {
 			try {
+				HttpRicmlet ressource;
 				String[] splitr = m_ressname.split("/");
 				String clsname = splitr[2];
-				for (int i = 3; i < splitr.length; i++) {
-					clsname += "."+splitr[i];
+				if (clsname.equals("examples")) {
+					for (int i = 3; i < splitr.length; i++) {
+						clsname += "."+splitr[i];
+					}
+					ressource = m_hs.getInstance(clsname);
 				}
-				HttpRicmlet ressource = m_hs.getInstance(clsname);
+				else {
+					String appname = splitr[2];
+					clsname = splitr[3];
+					Application app = new Application();
+					ressource = app.getInstance(clsname, appname);
+				}
 				resp.setReplyOk();
 				resp.setContentType(HttpRequest.getContentType(m_ressname));
 				ressource.doGet(this, (HttpRicmletResponse)resp);

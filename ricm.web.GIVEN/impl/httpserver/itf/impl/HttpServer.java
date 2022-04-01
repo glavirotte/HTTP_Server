@@ -57,9 +57,7 @@ public class HttpServer {
 	
 	
 
-	public HttpRicmlet getInstance(String clsname)
-			throws InstantiationException, IllegalAccessException, ClassNotFoundException, MalformedURLException, 
-			IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	public HttpRicmlet getInstance(String clsname) throws Exception {
 		if (!instances.containsKey(clsname)) {
 			Class<?> c = Class.forName(clsname);
 			instances.put(clsname, (HttpRicmlet) c.getDeclaredConstructor().newInstance());

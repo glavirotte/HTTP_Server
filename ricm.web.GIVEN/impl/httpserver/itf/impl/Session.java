@@ -41,8 +41,6 @@ public class Session implements HttpSession {
 	
 	public void resetTimer() {
 		this.currentTime = System.currentTimeMillis();
-		System.out.println(currentTime);
-		System.out.println(getDeathTime());
 	}
 
 }
