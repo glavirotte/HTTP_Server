@@ -22,4 +22,9 @@ public interface HttpSession {
 	 * Binds an object to this session, using the name specified.
 	 */
 	public void setValue(String key, Object value) ;
+	
+	/* 
+	 * Get the date of the end of the session
+	 */
+	public long getDeathTime();
 }

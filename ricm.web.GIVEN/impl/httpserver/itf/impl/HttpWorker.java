@@ -23,6 +23,7 @@ public class HttpWorker extends Thread {
 	
 	public void run() {
 		try {
+			m_hs.manageSessions();
 			// get the input and output streams associated to the socket
 			BufferedReader br = new BufferedReader(new InputStreamReader(m_soc.getInputStream()));
 			PrintStream ps = new PrintStream(m_soc.getOutputStream());

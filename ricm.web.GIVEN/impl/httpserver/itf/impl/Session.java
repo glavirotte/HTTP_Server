@@ -8,9 +8,12 @@ public class Session implements HttpSession {
 
 	protected String id;
 	protected HashMap<String, Object> content = new HashMap<String, Object>();
+	protected long currentTime;
+	protected long duration = 30000;
 	
 	protected Session(String id) {
 		this.id = id;
+		this.currentTime = System.currentTimeMillis();
 	}
 	
 	@Override
@@ -29,6 +32,17 @@ public class Session implements HttpSession {
 	public void setValue(String key, Object value) {
 		// TODO Auto-generated method stub
 		content.put(key, value);
+	}
+	
+	@Override
+	public long getDeathTime() {
+		return currentTime+duration;
+	}
+	
+	public void resetTimer() {
+		this.currentTime = System.currentTimeMillis();
+		System.out.println(currentTime);
+		System.out.println(getDeathTime());
 	}
 
 }

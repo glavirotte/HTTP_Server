@@ -80,7 +80,14 @@ public class HttpServer {
 		return new Integer(sessionNumber).toString();
 	}
 
-
+	public void manageSessions() {
+		for (String key : sessions.keySet()) {
+			if (sessions.get(key).getDeathTime() <= System.currentTimeMillis()) {
+				sessions.remove(key);
+			}
+		}
+	}
+	
 	/*
 	 * Reads a request on the given input stream and returns the corresponding HttpRequest object
 	 */

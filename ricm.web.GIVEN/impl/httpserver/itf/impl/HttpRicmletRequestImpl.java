@@ -39,6 +39,7 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 			session = new Session(m_hs.getSessionNumber());
 			m_hs.setSession(session.getId(), session);
 		}
+		((Session) session).resetTimer();
 		return session;
 	}
 
@@ -95,6 +96,9 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 							}
 						}
 						else {
+							if(cookie[0].startsWith(" ")) {
+								cookie[0] = cookie[0].substring(1);
+							}
 							cookies.put(cookie[0], cookie[1]);
 							System.out.println("Cookie: " + cookie[0] + " = " + cookie[1]);
 						}
@@ -112,6 +116,9 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 						}
 					}
 					else {
+						if(cookie[0].startsWith(" ")) {
+							cookie[0] = cookie[0].substring(1);
+						}
 						cookies.put(cookie[0], cookie[1]);
 						System.out.println("Cookie: " + cookie[0] + " = " + cookie[1]);
 					}
