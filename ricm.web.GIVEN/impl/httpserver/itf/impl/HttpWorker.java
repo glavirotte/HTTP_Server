@@ -23,6 +23,7 @@ public class HttpWorker extends Thread {
 	
 	public void run() {
 		try {
+			m_hs.manageSession();
 			// get the input and output streams associated to the socket
 			BufferedReader br = new BufferedReader(new InputStreamReader(m_soc.getInputStream()));
 			PrintStream ps = new PrintStream(m_soc.getOutputStream());
@@ -34,6 +35,7 @@ public class HttpWorker extends Thread {
 			// process the HTTP request
 			req.process(resp);
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("Server exception, skipping to next request " + e);		
 		} finally {
 			try {

@@ -34,10 +34,11 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 		}else {
 			session = this.m_hs.sessions.get(sessionId);
 			if(session == null) {
-				session = new Session(getCookie(sessionId));
+				session = new Session(sessionId);
 				this.m_hs.sessions.put(session.getId(), session);
 				System.out.println("Session:" + session.getId());
 			}
+			session.resetTimer();
 		}
 		return session;
 	}

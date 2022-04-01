@@ -8,10 +8,13 @@ public class Session implements HttpSession{
 	
 	public String id;
 	public Hashtable<String, Object> objects;
+	private long duration = 60000;
+	private long creationTimestamp;
 	
 	public Session(String id) {
 		this.id = id;
-		objects = new Hashtable<String, Object>();
+		this.objects = new Hashtable<String, Object>();
+		this.creationTimestamp = System.currentTimeMillis();
 	}
 
 	@Override
@@ -29,6 +32,15 @@ public class Session implements HttpSession{
 	public void setValue(String key, Object value) {
 		this.objects.put(key, value);
 		
+	}
+	
+	public long getDeathTime() {
+		long n = duration+ creationTimestamp;
+		return n;
+	}
+	
+	public void resetTimer() {
+		this.creationTimestamp = System.currentTimeMillis();
 	}
 	
 }

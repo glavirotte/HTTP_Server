@@ -55,7 +55,17 @@ public class HttpServer {
 		return m_folder;
 	}
 	
-	
+	public void manageSession() {
+		for (String key : sessions.keySet()) {
+			
+			long currentTime = System.currentTimeMillis();
+			Session currentSession = sessions.get(key);
+			
+			if(currentSession.getDeathTime() <= currentTime) {
+				sessions.remove(key);
+			}
+		}
+	}
 
 	public HttpRicmlet getInstance(String clsname)
 			throws InstantiationException, IllegalAccessException, ClassNotFoundException, MalformedURLException, 
