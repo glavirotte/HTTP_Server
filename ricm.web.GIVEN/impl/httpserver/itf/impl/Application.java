@@ -17,7 +17,7 @@ public class Application {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked", "resource" })
-	public HttpRicmlet getInstance(String className, String appName) throws Exception {
+	public HttpRicmlet getInstance(String className, String appName) throws Exception {	// Retourne une instance du Ricmlet correspondant à l'application
 		ClassLoader parent = ClassLoader.getSystemClassLoader();
 
 		File appJar = new File(appName+".jar");

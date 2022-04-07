@@ -11,7 +11,7 @@ public class HttpRicmletResponseImpl extends HttpResponseImpl implements HttpRic
 	}
 
 	public void setCookie(String name, String value) {
-		m_ps.println("Set-Cookie: " + name + "=" + value);
+		m_ps.println("Set-Cookie: " + name + "=" + value);			// Ajoute le cookie et sa valeur dans la requête HTTP
 		System.out.println("Set-Cookie: " + name + "=" + value);
 	}
 
