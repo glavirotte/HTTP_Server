@@ -13,7 +13,6 @@ public class Application {
 	protected HashMap<String, HttpRicmlet> classes;
 
 	public Application() {
-		
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked", "resource" })
