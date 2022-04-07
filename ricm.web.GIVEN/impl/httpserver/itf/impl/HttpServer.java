@@ -3,8 +3,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Hashtable;
@@ -30,8 +28,8 @@ public class HttpServer {
 	private int m_port;
 	private File m_folder;  // default folder for accessing static resources (files)
 	private ServerSocket m_ssoc;
-	private Hashtable<String, HttpRicmlet> instances;
-	public Hashtable<String, Session> sessions;
+	private Hashtable<String, HttpRicmlet> instances; // HashMap qui contient les différentes instances exécutées
+	public Hashtable<String, Session> sessions; // HashMap contenant les différentes sessions courantes
 	public int sessionNumber = 1;
 
 	protected HttpServer(int port, String folderName) {
@@ -55,27 +53,29 @@ public class HttpServer {
 		return m_folder;
 	}
 	
+	// A chaque interaction avec une session, on vérifie que les autres existent encore, ou si elles ont dépassé leur temps de vie et doivent être supprimées
 	public void manageSession() {
-		for (String key : sessions.keySet()) {
+		for (String key : sessions.keySet()) { 
 			
 			long currentTime = System.currentTimeMillis();
 			Session currentSession = sessions.get(key);
 			
-			if(currentSession.getDeathTime() <= currentTime) {
-				sessions.remove(key);
+			if(currentSession.getDeathTime() <= currentTime) { // Pour chaque session, on vérifie que la date de suppression soit déjà passée
+				sessions.remove(key); // Si c'est le cas, la session n'existe plus, on la supprime de la liste des sessions actives
 			}
 		}
 	}
 
+	// On récupère le Ricmlet correspondant à la classe fournie
 	public HttpRicmlet getInstance(String clsname)
 			throws Exception {
-		if(!instances.containsKey(clsname)) {
+		if(!instances.containsKey(clsname)) { // Si la classe demandée existe, on récupère l'objet Class correspondant
 			Class<?> c = Class.forName(clsname);
-			HttpRicmlet instance = (HttpRicmlet) c.getDeclaredConstructor().newInstance();
-			instances.put(clsname, instance);
+			HttpRicmlet instance = (HttpRicmlet) c.getDeclaredConstructor().newInstance(); // On crée une nouvelle instance de cette classe
+			instances.put(clsname, instance); // On ajoute cette instance dans la liste des instances actives
 		}
 		
-		return instances.get(clsname);
+		return instances.get(clsname); // On retourne l'instance trouvée précédemment (si on n'a pas trouvé, cela retournera null qui sera traité dans la couche supérieure
 		
 	}
 
@@ -93,10 +93,10 @@ public class HttpServer {
 		String method = parseline.nextToken().toUpperCase(); 
 		String ressname = parseline.nextToken();
 		if (method.equals("GET")) {
-			if (ressname.startsWith("/ricmlets")) {
+			if (ressname.startsWith("/ricmlets")) { // Si la ressource commence par ricmlet, on appelle la requête de ricmlet
 				request = new HttpRicmletRequestImpl(this, method, ressname, br);
 			}
-			else {
+			else { 
 				request = new HttpStaticRequest(this, method, ressname);
 			}
 		} else 
@@ -109,7 +109,7 @@ public class HttpServer {
 	 * Returns an HttpResponse object associated to the given HttpRequest object
 	 */
 	public HttpResponse getResponse(HttpRequest req, PrintStream ps) {
-		if (req.getRessname().startsWith("/ricmlets")) {
+		if (req.getRessname().startsWith("/ricmlets")) { // Si la ressource commence par ricmlet, on appelle la requête de ricmlet
 			return new HttpRicmletResponseImpl(this, req, ps);
 		}
 		else {

@@ -23,7 +23,8 @@ public class HttpWorker extends Thread {
 	
 	public void run() {
 		try {
-			m_hs.manageSession();
+			m_hs.manageSession(); // On appelle cette fonction afin de vérifier quelles sessions sont valides, et lesquelles ont dépassées leur temps de vie et doivent être supprimées
+			
 			// get the input and output streams associated to the socket
 			BufferedReader br = new BufferedReader(new InputStreamReader(m_soc.getInputStream()));
 			PrintStream ps = new PrintStream(m_soc.getOutputStream());
