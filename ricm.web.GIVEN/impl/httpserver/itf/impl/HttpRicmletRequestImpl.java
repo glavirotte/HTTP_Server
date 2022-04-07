@@ -19,41 +19,41 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 	public HttpRicmletRequestImpl(HttpServer hs, String method, String ressname, BufferedReader br) throws IOException {
 		super(hs, method, ressname, br);
 		this.reader = br;
-		parseCookies();
+		parseCookies();		// On extrait les cookies de la requête
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public HttpSession getSession() {
-		Session session;
-		String sessionId = cookies.get("sessionId");
+		Session session;								
+		String sessionId = cookies.get("sessionId");	// On récupère l'id de la session associée à l'utilisateur via les cookies
 		if(sessionId == null) {
-			session = new Session((new Integer(m_hs.sessionNumber++)).toString());
-			this.m_hs.sessions.put(session.getId(), session);
+			session = new Session((new Integer(m_hs.sessionNumber++)).toString()); // Si elle n'existe pas encore, on créer une nouvelle sessions
+			this.m_hs.sessions.put(session.getId(), session);			// On l'ajoute à la hashmap du serveur pour la conserver
 		}else {
-			session = this.m_hs.sessions.get(sessionId);
-			if(session == null) {
-				session = new Session(sessionId);
-				this.m_hs.sessions.put(session.getId(), session);
+			session = this.m_hs.sessions.get(sessionId);	// On récupère l'objet session correspondant à la session de l'utilisateur
+			if(session == null) {						
+				session = new Session(sessionId);		// Si la session n'existe plus car son timer est dépassé, on la recréer
+				this.m_hs.sessions.put(session.getId(), session); // On l'ajoute à la hashmap
 				System.out.println("Session:" + session.getId());
 			}
-			session.resetTimer();
+			session.resetTimer();	// On remet le timer de session à 0
 		}
 		return session;
 	}
 
 	@Override
-	public String getArg(String name) {
+	public String getArg(String name) {		// Retourne l'argument "name" présent dans la requête
 		return arguments.get(name);
 	}
 
 	@Override
-	public String getCookie(String name) {
+	public String getCookie(String name) {	// Retourne le cookie "name" présent dans la requête
 		return cookies.get(name);
 	}
 
 	@Override
-	public void process(HttpResponse resp) throws Exception {
+	public void process(HttpResponse resp) throws Exception { // Traite la requête 
 		
 		if (m_method.equals("GET")) {
 			try {
@@ -61,11 +61,11 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 				String clsname = null;
 				String appName = null;
 				
-				if(m_ressname.indexOf("?") < 0) {
+				if(m_ressname.indexOf("?") < 0) {			// Si il n'y a pas d'arguments dans la requête, on récupère le nom de la classe et de l'application
 					String str = m_ressname.substring(10);
 					appName = (str.substring(0, str.indexOf("/")));
 					clsname = (str.substring(appName.length()+1)).replace("/", ".");
-				}else {
+				}else {			// Si il y a des arguments on récupère le nom de la classe, de l'application et les arguments
 					String str = m_ressname.substring(10);
 					appName = (str.substring(0, str.indexOf("/")));
 					clsname = (str.substring(appName.length()+1, str.indexOf("?"))).replace("/", ".");
@@ -76,11 +76,11 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 					}
 					
 				}
-				Application app = new Application();
-				ressource = app.getInstance(clsname, appName);
-				resp.setReplyOk();
-				resp.setContentType(HttpRequest.getContentType(m_ressname));
-				ressource.doGet(this, (HttpRicmletResponse)resp);
+				Application app = new Application();				// Instanciation de l'application
+				ressource = app.getInstance(clsname, appName);		// Récupère l'application via le classLoader
+				resp.setReplyOk();		// Réponse valide
+				resp.setContentType(HttpRequest.getContentType(m_ressname));	// Type de contenu de la réponse
+				ressource.doGet(this, (HttpRicmletResponse)resp);				// On appelle la méthode do GET
 			} catch (ClassNotFoundException e) {
 				resp.setReplyError(404, " Class not found");
 				e.printStackTrace();
