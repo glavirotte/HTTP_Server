@@ -54,7 +54,8 @@ public class HttpServer {
 	}
 	
 	// A chaque interaction avec une session, on vérifie que les autres existent encore, ou si elles ont dépassé leur temps de vie et doivent être supprimées
-	public void manageSession() {
+	// Cette méthode doit être déclaré comme synchronized car la hashmap est partagée entre les threads et il peut y avoir des accès concurents
+	public synchronized void manageSession() {
 		for (String key : sessions.keySet()) { 
 			
 			long currentTime = System.currentTimeMillis();

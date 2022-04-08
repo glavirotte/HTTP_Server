@@ -54,7 +54,6 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 
 	@Override
 	public void process(HttpResponse resp) throws Exception { // Traite la requête 
-		
 		if (m_method.equals("GET")) {
 			try {
 				HttpRicmlet ressource;
