@@ -93,9 +93,15 @@ public class HttpRicmletRequestImpl extends HttpRicmletRequest{
 			while (!(currentLine = reader.readLine()).isEmpty()) {
 				if (currentLine.startsWith("Cookie: ")) {
 					String cookieLine = currentLine.substring(8);
-					String cookie[] = cookieLine.split("=");
-					cookies.put(cookie[0], cookie[1]);
-					System.out.println("Cookie: " + cookie[0] + " = " + cookie[1]);
+					String[] cookieName = cookieLine.split(";");
+					for (String c : cookieName) {
+						String cookie[] = c.split("=");
+						if(cookie[0].startsWith(" ")) {
+							cookie[0] = cookie[0].substring(1);
+						}
+						cookies.put(cookie[0], cookie[1]);
+						System.out.println("Cookie: " + cookie[0] + " = " + cookie[1]);
+					}
 				}
 			}
 	}

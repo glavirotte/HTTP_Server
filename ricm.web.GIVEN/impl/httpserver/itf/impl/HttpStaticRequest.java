@@ -20,7 +20,10 @@ public class HttpStaticRequest extends HttpRequest {
 	
 	// Fonction permettant la modification d'une réponse HTTP en fonction de l'existence ou non d'un fichier
 	public void process(HttpResponse resp) throws Exception {
-		
+		if (m_ressname.equals("/FILES/")) {
+			m_ressname = "/FILES/"+DEFAULT_FILE;
+		}
+			
 		if(m_method.compareTo("GET") == 0) {  // on verifie que le protocole HTTP est bien GET (comme demandé pour les requêtes statiques) 
 			File ressource = new File(m_hs.getFolder()+m_ressname); // On récupère le fichier avec le dossier du serveur et le nom du fichier fourni dans la requête
 			
